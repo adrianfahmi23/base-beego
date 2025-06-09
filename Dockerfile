@@ -10,13 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN apt update && apt install tzdata -y
 ENV TZ=Asia/Jakarta
 
-# S3 cert
-# ADD cohesity-cluster.crt /usr/local/share/ca-certificates/cohesity-cluster.crt
-# ADD cohesity-cluster3-new.crt /usr/local/share/ca-certificates/cohesity-cluster3-new.crt
-# RUN chmod 644 /usr/local/share/ca-certificates/cohesity-cluster.crt
-# RUN chmod 644 /usr/local/share/ca-certificates/cohesity-cluster3-new.crt
-# RUN update-ca-certificates
-
+ENV GO111MODULE=on
+ENV GOBIN=/go/bin
+ENV PATH=$PATH:/go/bin
 
 WORKDIR /go/src/app
 COPY . .
@@ -24,7 +20,10 @@ RUN go install github.com/beego/bee/v2@latest
 RUN go mod tidy
 RUN go mod vendor
 
+# RUN go install golang.org/x/tools/gopls@latest
+RUN git config --global --add safe.directory /go/src/app
+
 # running local
 CMD bee run --downdoc=true --gendoc=true
 
-EXPOSE 80
+EXPOSE 8011

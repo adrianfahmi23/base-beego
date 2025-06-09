@@ -1,0 +1,4 @@
+vendor
+app
+swagger
+.conf/app.conf

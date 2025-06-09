@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: app
+        ports:
+            - "8011:8011"
+        volumes:
+            - ./:/go/src/app
+        networks:
+            - setup-mysql_default
+
+networks:
+    setup-mysql_default:
+        external: true
