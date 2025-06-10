@@ -7,6 +7,24 @@ import (
 
 func init() {
 
+    beego.GlobalControllerRouter["example-beego/controllers:AuthController"] = append(beego.GlobalControllerRouter["example-beego/controllers:AuthController"],
+        beego.ControllerComments{
+            Method: "CheckToken",
+            Router: `/check-login`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["example-beego/controllers:AuthController"] = append(beego.GlobalControllerRouter["example-beego/controllers:AuthController"],
+        beego.ControllerComments{
+            Method: "Login",
+            Router: `/login`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["example-beego/controllers:MainController"] = append(beego.GlobalControllerRouter["example-beego/controllers:MainController"],
         beego.ControllerComments{
             Method: "Get",

@@ -7,30 +7,16 @@ import (
 
 // User defines user struct
 type User struct {
-	// ID defines the user ID. Should be unique per users set
-	ID int64 `json:"id" db:"id" example:"1" format:"int64"`
-	// Name is the name of a user
-	Name string `json:"name" db:"name" example:"Dmytro" minLength:"1" maxLength:"30"`
-	// Country is the country where user lives
-	Country string `json:"country" db:"country" example:"Ukraine"`
+	ID      int64  `json:"id" example:"1" format:"int64"`
+	Name    string `json:"name" example:"Dmytro" minLength:"1" maxLength:"30"`
+	Country string `json:"country" example:"Ukraine"`
+	Email   string `json:"email" example:"sample@gmail.com"`
 }
 
 var (
 	// Users holds map of our users (ID->User). In real life, access should be protected!
 	Users map[int64]*User
 )
-
-func init() {
-	Init()
-}
-
-// Init provides initial data for our application
-func Init() {
-	Users = make(map[int64]*User)
-	Users[1] = &User{1, "Dmytro", "Ukraine"}
-	Users[2] = &User{2, "John", "USA"}
-	Users[3] = &User{3, "Peter", "United Kingdom"}
-}
 
 // AddOne adds single user to the map
 func AddOne(user User) int64 {
