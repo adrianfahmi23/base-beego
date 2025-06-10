@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"example-beego/models"
 	"example-beego/utils"
+	"strconv"
 	"strings"
 
 	beego "github.com/beego/beego/v2/server/web"
@@ -25,27 +26,31 @@ func (res *AuthController) Login() {
 	request := models.Auth{}
 
 	if err := json.Unmarshal(res.Ctx.Input.RequestBody, &request); err != nil {
-		res.Ctx.Output.SetStatus(500)
-		res.Data["json"] = err.Error()
-		res.ServeJSON()
+		utils.Response(&res.Controller, utils.ResponseMessage{
+			Message: "Gagal mendapatkan data",
+		}, 401)
+		return
 	}
 
 	val, err := utils.GenerateJWT(models.User{
-		ID:      1,
-		Name:    "Fahmi Adrian",
-		Country: "Indonesia",
-		Email:   "adrian.fahmi23@gmail.com",
+		ID:    1,
+		Name:  "Fahmi Adrian",
+		Email: "adrian.fahmi23@gmail.com",
 	})
 
 	if err != nil {
-		res.Ctx.Output.SetStatus(500)
-		res.Data["json"] = err.Error()
-		res.ServeJSON()
+		utils.Response(&res.Controller, utils.ResponseMessage{
+			Message: "Gagal Generate Token",
+		}, 401)
+		return
 	}
 
-	res.Data["json"] = val
-	res.ServeJSON()
-
+	utils.Response(&res.Controller, utils.ResponseApi[map[string]any]{
+		Message: "Berhasil login",
+		Data: map[string]any{
+			"token": val,
+		},
+	}, 200)
 }
 
 // @Title Check Login
@@ -59,9 +64,10 @@ func (res *AuthController) CheckToken() {
 	authorizationHeader := res.Ctx.Request.Header.Get("Authorization")
 
 	if !strings.Contains(authorizationHeader, "Bearer") {
-		res.Ctx.Output.SetStatus(401)
-		res.Data["json"] = "Token tidak ditemukan"
-		res.ServeJSON()
+		utils.Response(&res.Controller, utils.ResponseMessage{
+			Message: "Token tidak ditemukan",
+		}, 401)
+		return
 	}
 
 	token := strings.Replace(authorizationHeader, "Bearer ", "", -1)
@@ -69,11 +75,19 @@ func (res *AuthController) CheckToken() {
 	claims, err := utils.VerifyJWT(token)
 
 	if err != nil {
-		res.Ctx.Output.SetStatus(401)
-		// res.Data["json"] = "Token signature tidak cocok"
-		res.ServeJSON()
+		utils.Response(&res.Controller, utils.ResponseMessage{
+			Message: "Token signature tidak cocok",
+		}, 401)
+		return
 	}
 
-	res.Data["json"] = claims
-	res.ServeJSON()
+	idInt64, _ := strconv.Atoi(claims.ID) // You should handle the error in production code
+	utils.Response(&res.Controller, utils.ResponseApi[models.User]{
+		Message: "Berhasil mengambil data",
+		Data: models.User{
+			ID:    idInt64,
+			Name:  claims.Username,
+			Email: claims.Email,
+		},
+	}, 200)
 }
