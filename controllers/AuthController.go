@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"example-beego/models"
 	"example-beego/utils"
-	"strconv"
 	"strings"
 
 	beego "github.com/beego/beego/v2/server/web"
@@ -33,7 +32,7 @@ func (res *AuthController) Login() {
 	}
 
 	val, err := utils.GenerateJWT(models.User{
-		ID:    1,
+		ID:    "1",
 		Name:  "Fahmi Adrian",
 		Email: "adrian.fahmi23@gmail.com",
 	})
@@ -81,11 +80,10 @@ func (res *AuthController) CheckToken() {
 		return
 	}
 
-	idInt64, _ := strconv.Atoi(claims.ID) // You should handle the error in production code
 	utils.Response(&res.Controller, utils.ResponseApi[models.User]{
 		Message: "Berhasil mengambil data",
 		Data: models.User{
-			ID:    idInt64,
+			ID:    claims.ID,
 			Name:  claims.Username,
 			Email: claims.Email,
 		},

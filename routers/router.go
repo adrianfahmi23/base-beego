@@ -2,7 +2,6 @@ package routers
 
 import (
 	"example-beego/controllers"
-	middleware "example-beego/middleware"
 
 	beego "github.com/beego/beego/v2/server/web"
 )
@@ -15,7 +14,7 @@ func init() {
 			),
 		),
 		beego.NSNamespace("/user",
-			beego.NSBefore(middleware.AuthMiddleware),
+			// beego.NSBefore(middleware.AuthMiddleware),
 			beego.NSInclude(
 				&controllers.UsersController{},
 			),

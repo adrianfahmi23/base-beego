@@ -6,6 +6,7 @@ require github.com/beego/beego/v2 v2.3.8
 
 require (
 	github.com/golang-jwt/jwt/v4 v4.5.2
+	github.com/google/uuid v1.6.0
 	github.com/smartystreets/goconvey v1.6.4
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.30.0

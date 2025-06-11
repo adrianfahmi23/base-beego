@@ -21,3 +21,14 @@ type UsersController struct {
 func (res *UsersController) Index() {
 	utils.Response(&res.Controller, "Berhasil Mengambil data")
 }
+
+// @Title Store User
+// @Description Post User
+// @Param   Authorization  header string  true "Authorization Token"
+// @Success 200 {object} utils.ResponseApi
+// @Failure 400 Bad Request
+// @Failure 500 Server Error
+// @router /store [post]
+func (res *UsersController) Store() {
+
+}
