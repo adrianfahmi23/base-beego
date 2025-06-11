@@ -1,14 +1,11 @@
 package utils
 
 import (
-	"example-beego/models"
 	"time"
 
 	"github.com/beego/beego/v2/server/web"
 	jwt "github.com/golang-jwt/jwt/v4"
 )
-
-type M map[string]interface{}
 
 type JwtClaim struct {
 	jwt.RegisteredClaims
@@ -16,7 +13,7 @@ type JwtClaim struct {
 	Email    string `json:"email"`
 }
 
-func GenerateJWT(user models.User) (string, error) {
+func GenerateJWT(user map[string]interface{}) (string, error) {
 	signature_key := []byte(web.AppConfig.DefaultString("jwt_key", "my-key-secret"))
 	signing_method := jwt.SigningMethodHS256
 
@@ -26,8 +23,8 @@ func GenerateJWT(user models.User) (string, error) {
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
-		Username: user.Name,
-		Email:    user.Email,
+		Username: user["Username"].(string),
+		Email:    user["Email"].(string),
 	}
 
 	token := jwt.NewWithClaims(

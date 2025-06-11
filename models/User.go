@@ -1,6 +1,7 @@
 package models
 
 import (
+	"example-beego/utils"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,6 +19,13 @@ type User struct {
 	Status    uint      `json:"status"`
 }
 
+type UserForm struct {
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type Auth struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -28,7 +36,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	return nil
 }
 
-func GetOne(username string) (Auth, error) {
+func GetOneUser(username string) (Auth, error) {
 	var user Auth
 
 	if err := DB.First(&user, username).Error; err != nil {
@@ -38,7 +46,7 @@ func GetOne(username string) (Auth, error) {
 	return user, nil
 }
 
-func GetAll() ([]Auth, error) {
+func GetAllUser() ([]Auth, error) {
 	var users []Auth
 
 	if err := DB.Find(&users).Error; err != nil {
@@ -48,16 +56,21 @@ func GetAll() ([]Auth, error) {
 	return users, nil
 }
 
-func Store(user User) error {
-
-	if err := DB.Omit("UpdatedAt", "Status", "CreatedAt").Create(&user).Error; err != nil {
+func StoreUser(user UserForm) error {
+	hash, _ := utils.HashPassword(user.Password)
+	if err := DB.Omit("UpdatedAt", "Status", "CreatedAt").Create(&User{
+		Name:     user.Name,
+		Username: user.Username,
+		Email:    user.Email,
+		Password: hash,
+	}).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func Update(update map[string]interface{}, id string) error {
+func UpdateUser(update map[string]interface{}, id string) error {
 
 	if err := DB.Model(&User{}).Where("id = ?", id).Updates(update).Error; err != nil {
 		return err
@@ -66,7 +79,7 @@ func Update(update map[string]interface{}, id string) error {
 	return nil
 }
 
-func Delete(id string) error {
+func DeleteUser(id string) error {
 
 	if err := DB.Delete(User{}, id).Error; err != nil {
 		return err

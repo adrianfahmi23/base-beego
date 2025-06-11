@@ -31,10 +31,9 @@ func (res *AuthController) Login() {
 		return
 	}
 
-	val, err := utils.GenerateJWT(models.User{
-		ID:    "1",
-		Name:  "Fahmi Adrian",
-		Email: "adrian.fahmi23@gmail.com",
+	val, err := utils.GenerateJWT(map[string]interface{}{
+		"Username": "Fahmi Adrian",
+		"Email":    "adrian.fahmi23@gmail.com",
 	})
 
 	if err != nil {
