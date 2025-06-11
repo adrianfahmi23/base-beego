@@ -16,7 +16,7 @@ func init() {
 		beego.NSNamespace("/user",
 			// beego.NSBefore(middleware.AuthMiddleware),
 			beego.NSInclude(
-				&controllers.UsersController{},
+				&controllers.UserController{},
 			),
 		),
 	)

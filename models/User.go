@@ -13,7 +13,7 @@ type User struct {
 	Name      string    `json:"name"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
-	Password  string    `json:"password"`
+	Password  string    `json:"-"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Status    uint      `json:"status"`
@@ -36,21 +36,31 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	return nil
 }
 
-func GetOneUser(username string) (Auth, error) {
-	var user Auth
+func GetOneUserById(id string) (User, error) {
+	var user User
 
-	if err := DB.First(&user, username).Error; err != nil {
-		return Auth{}, err
+	if err := DB.First(&user, "id = ?", id).Error; err != nil {
+		return User{}, err
 	}
 
 	return user, nil
 }
 
-func GetAllUser() ([]Auth, error) {
-	var users []Auth
+func GetOneUser(username string) (User, error) {
+	var user User
+
+	if err := DB.Model(User{Username: username}).First(&user).Error; err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
+func GetAllUser() ([]User, error) {
+	var users []User
 
 	if err := DB.Find(&users).Error; err != nil {
-		return []Auth{}, err
+		return []User{}, err
 	}
 
 	return users, nil
@@ -81,7 +91,7 @@ func UpdateUser(update map[string]interface{}, id string) error {
 
 func DeleteUser(id string) error {
 
-	if err := DB.Delete(User{}, id).Error; err != nil {
+	if err := DB.Delete(User{}, "id = ?", id).Error; err != nil {
 		return err
 	}
 

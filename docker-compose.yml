@@ -11,8 +11,8 @@ services:
         volumes:
             - ./:/go/src/app
         networks:
-            - database-docker_default
+            - setup-mysql_default
 
 networks:
-    database-docker_default:
+    setup-mysql_default:
         external: true
